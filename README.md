@@ -10,7 +10,8 @@ The output format of mstest.exe was and XML format called TRX. On the other hand
 However, there are a couple of differences between the old mstest.exe output, and the vstest.console.exe trx logger output.  
 These differences can cause some problems, one that I encountered is SpecFlow cannot generate its HTML report properly any more (details [here](https://github.com/techtalk/SpecFlow/issues/278)).
 
-The logger implemented in this repository replicates the format of the old TRX produced by `mstest.exe`.
+The logger implemented in this repository replicates the format of the old TRX produced by `mstest.exe`.  
+(Some more information on the background can be found in [this blog post](http://blog.markvincze.com/how-to-fix-the-empty-specflow-html-report-problem-with-vstest-console-exe/).)
 
 ## Usage
 
