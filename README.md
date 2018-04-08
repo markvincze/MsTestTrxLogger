@@ -23,4 +23,4 @@ Then you have to specify the logger to use when executing the tool with the `Log
 
 ### Getting the binaries
 
-You can get the binaries either by cloning this repo and building the project, or by downloading them from the release directory ([link](https://github.com/markvincze/MsTestTrxLogger/raw/master/release/MsTestTrxLogger%201.0%20binaries.zip)).
+You can get the binaries either by cloning this repo and building the project, or by downloading them from the [Releases](https://github.com/markvincze/MsTestTrxLogger/releases) page.
