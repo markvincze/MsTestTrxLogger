@@ -124,8 +124,6 @@ namespace MsTestTrxLogger
             File.WriteAllText(trxResultFilePath, doc.ToString());
 
             Console.WriteLine("Results File: {0}", trxResultFilePath);
-
-            File.WriteAllText(Path.Combine(outputDirectoryPath, "testResultsMsTestLogger.trx"), doc.ToString());
         }
 
         private static void CleanXmlNamespaces(XDocument doc)
