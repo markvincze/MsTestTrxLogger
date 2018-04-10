@@ -31,7 +31,7 @@ namespace MsTestTrxLogger
             this.testRunStarted = testRunStarted;
         }
 
-        public void WriteTrxOutput(string outputDirectoryPath, string trxFilePath)
+        public void WriteTrxOutput(string trxFilePath)
         {
             Console.WriteLine("Starting to generate trx XML output.");
 

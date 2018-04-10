@@ -61,7 +61,7 @@ namespace MsTestTrxLogger
                 {
                     var trxOutputWriter = new MsTestTrxXmlWriter(testResults, args, testRunStarted);
 
-                    trxOutputWriter.WriteTrxOutput(testRunDirectory, trxFilePath);
+                    trxOutputWriter.WriteTrxOutput(trxFilePath);
                 }
                 catch (Exception ex)
                 {
