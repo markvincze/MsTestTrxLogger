@@ -31,7 +31,7 @@ namespace MsTestTrxLogger
             this.testRunStarted = testRunStarted;
         }
 
-        public void WriteTrxOutput(string outputDirectoryPath)
+        public void WriteTrxOutput(string outputDirectoryPath, string trxFilePath)
         {
             Console.WriteLine("Starting to generate trx XML output.");
 
@@ -113,17 +113,9 @@ namespace MsTestTrxLogger
 
             Console.WriteLine("XML generation done, saving the trx files.");
 
-            var trxResultFilePath = Path.Combine(
-                outputDirectoryPath,
-                String.Format(
-                    "{0}_{1} {2}.trx",
-                    Environment.UserName,
-                    Environment.MachineName,
-                    DateTime.Now.ToString("yyyy-MM-dd HH_mm_ss")));
+            File.WriteAllText(trxFilePath, doc.ToString());
 
-            File.WriteAllText(trxResultFilePath, doc.ToString());
-
-            Console.WriteLine("Results File: {0}", trxResultFilePath);
+            Console.WriteLine("Results File: {0}", trxFilePath);
         }
 
         private static void CleanXmlNamespaces(XDocument doc)
