@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Client;
 
@@ -7,15 +8,29 @@ namespace MsTestTrxLogger
 {
     [ExtensionUri("logger://MsTestTrxLogger/v1")]
     [FriendlyName("MsTestTrxLogger")]
-    public class MsTestTrxLogger : ITestLogger
+    public class MsTestTrxLogger : ITestLoggerWithParameters
     {
+        /// <summary>
+        /// Cache the TRX file path
+        /// </summary>
+        private string trxFilePath;
+
+        /// <summary>
+        /// Parameters dictionary for logger. Ex: {"LogFileName":"TestResults.trx"}.
+        /// </summary>
+        private Dictionary<string, string> parametersDictionary;
+        private string LogFileNameKey = "LogFileName";
+        private string testResultsDirPath;
+
         public void Initialize(TestLoggerEvents events, string testRunDirectory)
         {
             Console.WriteLine("Initializing MsTestTrxLogger.");
-            Console.WriteLine("testRunDirectory {0}", testRunDirectory);
+            Console.WriteLine("Test Run Directory: {0}", testRunDirectory);
 
             var testRunStarted = DateTime.Now;
             List<TestResult> testResults = new List<TestResult>();
+            testResultsDirPath = testRunDirectory;
+            DeriveTrxFilePath();
 
             events.TestResult += (sender, eventArgs) =>
             {
@@ -46,13 +61,63 @@ namespace MsTestTrxLogger
                 {
                     var trxOutputWriter = new MsTestTrxXmlWriter(testResults, args, testRunStarted);
 
-                    trxOutputWriter.WriteTrxOutput(testRunDirectory);
+                    trxOutputWriter.WriteTrxOutput(testRunDirectory, trxFilePath);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.ToString());
                 }
             };
+        }
+
+        public void Initialize(TestLoggerEvents events, Dictionary<string, string> parameters)
+        {
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            if (parameters.Count == 0)
+            {
+                throw new ArgumentException("No default parameters added", nameof(parameters));
+            }
+
+            parametersDictionary = parameters;
+            Initialize(events, parametersDictionary[DefaultLoggerParameterNames.TestRunDirectory]);
+        }
+
+        private void DeriveTrxFilePath()
+        {
+            if (parametersDictionary != null)
+            {
+                var isLogFileNameParameterExists = parametersDictionary.TryGetValue(LogFileNameKey, out string logFileNameValue);
+                if (isLogFileNameParameterExists && !string.IsNullOrWhiteSpace(logFileNameValue))
+                {
+                    trxFilePath = Path.Combine(testResultsDirPath, logFileNameValue);
+                }
+                else
+                {
+                    SetDefaultTrxFilePath();
+                }
+            }
+            else
+            {
+                SetDefaultTrxFilePath();
+            }
+        }
+
+        /// <summary>
+        /// Sets auto generated Trx file name under test results directory.
+        /// </summary>
+        private void SetDefaultTrxFilePath()
+        {
+            trxFilePath = Path.Combine(
+                testResultsDirPath,
+                String.Format(
+                    "{0}_{1} {2}.trx",
+                    Environment.UserName,
+                    Environment.MachineName,
+                    DateTime.Now.ToString("yyyy-MM-dd HH_mm_ss")));
         }
 
         /// <summary>
