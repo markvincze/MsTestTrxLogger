@@ -22,8 +22,8 @@ Then you have to specify the logger to use when executing the tool with the `Log
     vstest.console.exe ... /Logger:MsTestTrxLogger
 
 Optional parameter for MsTestTrxLogger: `LogFileName`, for if you want to specify the name and path of the output .trx file.
-	
-	```vstest.console.exe ... /Logger:MsTestTrxLogger;LogFileName=<NameOfTestResultsFile.trx>```
+
+	vstest.console.exe ... /Logger:MsTestTrxLogger;LogFileName=<NameOfTestResultsFile.trx>
 
 ### Getting the binaries
 
