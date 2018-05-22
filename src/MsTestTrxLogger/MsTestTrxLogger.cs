@@ -13,14 +13,26 @@ namespace MsTestTrxLogger
         /// <summary>
         /// Cache the TRX file path
         /// </summary>
-        private string trxFilePath;
+        private string _trxFilePath;
+        private const string LogFileNameKey = "LogFileName";
 
-        /// <summary>
-        /// Parameters dictionary for logger. Ex: {"LogFileName":"TestResults.trx"}.
-        /// </summary>
-        private Dictionary<string, string> parametersDictionary;
-        private string LogFileNameKey = "LogFileName";
-        private string testResultsDirPath;
+        public void Initialize(TestLoggerEvents events, Dictionary<string, string> parameters)
+        {
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            if (parameters.Count == 0)
+            {
+                throw new ArgumentException("No default parameters added", nameof(parameters));
+            }
+
+            parameters.TryGetValue(LogFileNameKey, out string logFileNameValue);
+            string testResultsDirPath = parameters[DefaultLoggerParameterNames.TestRunDirectory];
+            DeriveTrxFilePath(logFileNameValue, testResultsDirPath);
+            Initialize(events, testResultsDirPath);
+        }
 
         public void Initialize(TestLoggerEvents events, string testRunDirectory)
         {
@@ -29,9 +41,7 @@ namespace MsTestTrxLogger
 
             var testRunStarted = DateTime.Now;
             List<TestResult> testResults = new List<TestResult>();
-            testResultsDirPath = testRunDirectory;
-            DeriveTrxFilePath();
-
+            
             events.TestResult += (sender, eventArgs) =>
             {
                 try
@@ -61,7 +71,7 @@ namespace MsTestTrxLogger
                 {
                     var trxOutputWriter = new MsTestTrxXmlWriter(testResults, args, testRunStarted);
 
-                    trxOutputWriter.WriteTrxOutput(trxFilePath);
+                    trxOutputWriter.WriteTrxOutput(_trxFilePath);
                 }
                 catch (Exception ex)
                 {
@@ -70,48 +80,24 @@ namespace MsTestTrxLogger
             };
         }
 
-        public void Initialize(TestLoggerEvents events, Dictionary<string, string> parameters)
+        private void DeriveTrxFilePath(string logFileNameValue, string testResultsDirPath)
         {
-            if (parameters == null)
+            if (string.IsNullOrWhiteSpace(logFileNameValue))
             {
-                throw new ArgumentNullException(nameof(parameters));
-            }
-
-            if (parameters.Count == 0)
-            {
-                throw new ArgumentException("No default parameters added", nameof(parameters));
-            }
-
-            parametersDictionary = parameters;
-            Initialize(events, parametersDictionary[DefaultLoggerParameterNames.TestRunDirectory]);
-        }
-
-        private void DeriveTrxFilePath()
-        {
-            if (parametersDictionary != null)
-            {
-                var isLogFileNameParameterExists = parametersDictionary.TryGetValue(LogFileNameKey, out string logFileNameValue);
-                if (isLogFileNameParameterExists && !string.IsNullOrWhiteSpace(logFileNameValue))
-                {
-                    trxFilePath = Path.Combine(testResultsDirPath, logFileNameValue);
-                }
-                else
-                {
-                    SetDefaultTrxFilePath();
-                }
+                SetDefaultTrxFilePath(testResultsDirPath);
             }
             else
             {
-                SetDefaultTrxFilePath();
+                _trxFilePath = Path.Combine(testResultsDirPath, logFileNameValue);
             }
         }
 
         /// <summary>
         /// Sets auto generated Trx file name under test results directory.
         /// </summary>
-        private void SetDefaultTrxFilePath()
+        private void SetDefaultTrxFilePath(string testResultsDirPath)
         {
-            trxFilePath = Path.Combine(
+            _trxFilePath = Path.Combine(
                 testResultsDirPath,
                 String.Format(
                     "{0}_{1} {2}.trx",
