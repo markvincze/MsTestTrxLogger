@@ -15,7 +15,10 @@ The logger implemented in this repository replicates the format of the old TRX p
 
 ## Usage
 
-In order to use the logger, you need to copy its binaries to the folder `C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\CommonExtensions\Microsoft\TestWindow\Extensions` (where you have to modify the 12.0 version number to the version of the `vstest.console.exe` you're using (12.0 is for Visual Studio 2013).
+In order to use the logger, you need to copy its binaries to the Extensions folder depending on your Visual Studio version.
+
+ - Before VS2017 the folder is `C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\CommonExtensions\Microsoft\TestWindow\Extensions` (where you have to modify the 12.0 version number to the version of the `vstest.console.exe` you're using (12.0 is for Visual Studio 2013));
+ - And starting from VS2017 it should be `C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\Common7\IDE\Extensions\TestPlatform\Extensions`.
 
 Then you have to specify the logger to use when executing the tool with the `Logger` parameter.
 
