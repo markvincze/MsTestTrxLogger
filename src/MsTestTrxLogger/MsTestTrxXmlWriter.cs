@@ -104,7 +104,7 @@ namespace MsTestTrxLogger
                       new XElement("Times",
                         new XAttribute("creation", testRunStarted.ToString("o")),
                         new XAttribute("finish", DateTime.Now.ToString("o")),
-                        new XAttribute("queueing", testRunStarted.ToString("o")),
+                        new XAttribute("queuing", testRunStarted.ToString("o")),
                         new XAttribute("start", testRunStarted.ToString("o")))
                     ));
 
