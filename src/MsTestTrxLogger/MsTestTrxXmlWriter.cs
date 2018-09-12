@@ -13,6 +13,8 @@ namespace MsTestTrxLogger
     public class MsTestTrxXmlWriter
     {
         private const string adapterTypeName = "Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a";
+        
+        private const string unitTestTypeGuid = "13CDC9D9-DDB5-4fa4-A97D-D965CCFC6D4B";
 
         private readonly IList<TestResult> testResults;
 
@@ -55,7 +57,7 @@ namespace MsTestTrxLogger
                             new XAttribute("testId", UnitTestIdGenerator.GuidFromString(result.TestCase.FullyQualifiedName)),
                             new XAttribute("testListId", testRunId.ToString()),
                             new XAttribute("testName", result.TestCase.DisplayName),
-                            new XAttribute("testType", testRunId.ToString()),
+                            new XAttribute("testType", unitTestTypeGuid),
                             GetOutputElement(result)))),
                     new XElement("ResultSummary",
                         new XAttribute("outcome", completeEventArgs.IsAborted ? "Aborted" : completeEventArgs.IsCanceled ? "Canceled" : "Completed"),
