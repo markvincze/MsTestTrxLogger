@@ -99,7 +99,7 @@ namespace MsTestTrxLogger
                       new XElement("TestEntries",
                         testResults.Select(result => new XElement("TestEntry",
                             new XAttribute("executionId", GetExecutionId(result)),
-                            new XAttribute("testId", UnitTestIdGenerator.GuidFromString(result.TestCase.DisplayName)),
+                            new XAttribute("testId", UnitTestIdGenerator.GuidFromString(result.TestCase.FullyQualifiedName)),
                             new XAttribute("testListId", testRunId.ToString())))),
                       new XElement("TestLists",
                         new XElement("TestList", new XAttribute("id", testRunId.ToString()), new XAttribute("name", "Test list"))),
