@@ -14,6 +14,8 @@ namespace MsTestTrxLogger
     {
         private const string adapterTypeName = "Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a";
 
+        private const string unitTestTypeGuid = "13CDC9D9-DDB5-4fa4-A97D-D965CCFC6D4B";
+
         private readonly IList<TestResult> testResults;
 
         private readonly TestRunCompleteEventArgs completeEventArgs;
@@ -55,7 +57,7 @@ namespace MsTestTrxLogger
                             new XAttribute("testId", UnitTestIdGenerator.GuidFromString(result.TestCase.FullyQualifiedName)),
                             new XAttribute("testListId", testRunId.ToString()),
                             new XAttribute("testName", result.TestCase.DisplayName),
-                            new XAttribute("testType", testRunId.ToString()),
+                            new XAttribute("testType", unitTestTypeGuid),
                             GetOutputElement(result)))),
                     new XElement("ResultSummary",
                         new XAttribute("outcome", completeEventArgs.IsAborted ? "Aborted" : completeEventArgs.IsCanceled ? "Canceled" : "Completed"),
@@ -97,14 +99,14 @@ namespace MsTestTrxLogger
                       new XElement("TestEntries",
                         testResults.Select(result => new XElement("TestEntry",
                             new XAttribute("executionId", GetExecutionId(result)),
-                            new XAttribute("testId", UnitTestIdGenerator.GuidFromString(result.TestCase.DisplayName)),
+                            new XAttribute("testId", UnitTestIdGenerator.GuidFromString(result.TestCase.FullyQualifiedName)),
                             new XAttribute("testListId", testRunId.ToString())))),
                       new XElement("TestLists",
-                        new XElement("TestList", new XAttribute("id", testRunId.ToString()), new XAttribute("name", "Test list"))),
+                        new XElement("TestList", new XAttribute("id", testRunId.ToString()), new XAttribute("name", "All Loaded Results"))),
                       new XElement("Times",
                         new XAttribute("creation", testRunStarted.ToString("o")),
                         new XAttribute("finish", DateTime.Now.ToString("o")),
-                        new XAttribute("queueing", testRunStarted.ToString("o")),
+                        new XAttribute("queuing", testRunStarted.ToString("o")),
                         new XAttribute("start", testRunStarted.ToString("o")))
                     ));
 
