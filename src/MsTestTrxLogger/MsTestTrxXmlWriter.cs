@@ -51,7 +51,7 @@ namespace MsTestTrxLogger
                             new XAttribute("duration", result.Duration.ToString()),
                             new XAttribute("endTime", result.EndTime.ToString("o")),
                             new XAttribute("executionId", GetExecutionId(result)),
-                            new XAttribute("outcome", result.Outcome == TestOutcome.Skipped ? "Inconclusive" : result.Outcome.ToString()),
+                            new XAttribute("outcome", result.Outcome == TestOutcome.Skipped ? "NotExecuted" : result.Outcome.ToString()),
                             new XAttribute("relativeResultsDirectory", GetExecutionId(result)),
                             new XAttribute("startTime", result.StartTime.ToString("o")),
                             new XAttribute("testId", UnitTestIdGenerator.GuidFromString(result.TestCase.FullyQualifiedName)),
@@ -90,7 +90,7 @@ namespace MsTestTrxLogger
                                     new XElement("Key", p.Name),
                                     new XElement("Value", p.Value)))),
                             new XElement("TestCategory",
-                                GetTestCategory(result).Select(c => new XElement("TestCategoryItem", c.TestCategories.First()))),
+                                GetTestCategory(result).SelectMany( c => c.TestCategories).Select(c => new XElement("TestCategoryItem", c))),
                             new XElement("TestMethod",
                                 new XAttribute("adapterTypeName", adapterTypeName),
                                 new XAttribute("className", GetClassFullName(result)),
@@ -242,7 +242,7 @@ namespace MsTestTrxLogger
         /// The information in the TestCategoryAttributes (<see cref="Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute" />) is not present
         /// in the object model provided in Microsoft.VisualStudio.TestPlatform.ObjectModel, so we have to look it up in the unit test assembly.
         /// </remarks>
-        private IEnumerable<TestCategoryAttribute> GetTestCategory(TestResult test)
+        private IEnumerable<TestCategoryBaseAttribute> GetTestCategory(TestResult test)
         {
             var assembly = GetAssembly(test.TestCase.Source);
 
@@ -253,7 +253,7 @@ namespace MsTestTrxLogger
 
             var method = type.GetMethod(methodName);
 
-            return method.GetCustomAttributes<TestCategoryAttribute>();
+            return method.GetCustomAttributes<TestCategoryBaseAttribute>();
         }
 
         /// <summary>
