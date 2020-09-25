@@ -46,10 +46,7 @@ namespace MsTestTrxLogger
             {
                 try
                 {
-                    if (!IsTestIgnored(eventArgs.Result))
-                    {
-                        testResults.Add(eventArgs.Result);
-                    }
+                    testResults.Add(eventArgs.Result);                    
                 }
                 catch (Exception ex)
                 {
@@ -106,13 +103,5 @@ namespace MsTestTrxLogger
                     DateTime.Now.ToString("yyyy-MM-dd HH_mm_ss")));
         }
 
-        /// <summary>
-        /// Returns whether the test was ignored or not.
-        /// </summary>
-        /// <remarks>
-        /// The object model doesn't indicate whether a test was ignored with an IgnoreAttribute, or was skipped for other reasons.
-        /// It seems to be a reliable way to recognize if a test was actually ignored if we check whether the number of its Messages id 0.
-        /// </remarks>
-        private bool IsTestIgnored(TestResult test) => test.Outcome == TestOutcome.Skipped && test.Messages.Count == 0;
     }
 }

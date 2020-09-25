@@ -51,7 +51,7 @@ namespace MsTestTrxLogger
                             new XAttribute("duration", result.Duration.ToString()),
                             new XAttribute("endTime", result.EndTime.ToString("o")),
                             new XAttribute("executionId", GetExecutionId(result)),
-                            new XAttribute("outcome", result.Outcome == TestOutcome.Skipped ? "Inconclusive" : result.Outcome.ToString()),
+                            new XAttribute("outcome", result.Outcome == TestOutcome.Skipped ? "NotExecuted" : result.Outcome.ToString()),
                             new XAttribute("relativeResultsDirectory", GetExecutionId(result)),
                             new XAttribute("startTime", result.StartTime.ToString("o")),
                             new XAttribute("testId", UnitTestIdGenerator.GuidFromString(result.TestCase.FullyQualifiedName)),
